@@ -144,10 +144,12 @@ public:
     FINLINE bool put(const Point2 &_pos, const Float *value) {
         const int channels = m_bitmap->getChannelCount();
 
+        bool bad_sample = false;
         /* Check if all sample values are valid */
         for (int i=0; i<channels; ++i) {
-            if (EXPECT_NOT_TAKEN((!std::isfinite(value[i]) || value[i] < 0) && m_warn))
-                goto bad_sample;
+            if (EXPECT_NOT_TAKEN((!std::isfinite(value[i]) || value[i] < 0) && m_warn)) {
+                bad_sample = true;  //!
+            }
         }
 
         {
@@ -186,22 +188,10 @@ public:
             }
         }
 
-        return true;
-
-        bad_sample:
-        {
-            std::ostringstream oss;
-            oss << "Invalid sample value : [";
-            for (int i=0; i<channels; ++i) {
-                oss << value[i];
-                if (i+1 < channels)
-                    oss << ", ";
-            }
-            oss << "]";
-            Log(EWarn, "%s", oss.str().c_str());
-        }
-        return false;
+        return true;  //!
     }
+
+
 
     /// Create a clone of the entire image block
     ref<ImageBlock> clone() const {
