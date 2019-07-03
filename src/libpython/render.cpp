@@ -4,6 +4,8 @@
 #include <mitsuba/render/renderqueue.h>
 #include <mitsuba/render/renderjob.h>
 #include <mitsuba/render/noise.h>
+//#include <mitsuba/render/photon.h> //!
+//#include <mitsuba/render/photonmapper.h> //!
 #include "../shapes/instance.h"
 
 using namespace mitsuba;
@@ -104,6 +106,7 @@ static bp::object scene_rayIntersect(const Scene *scene, const Ray &ray) {
 
     return bp::object(its);
 }
+
 
 static bp::object scene_rayIntersectAll(const Scene *scene, const Ray &ray) {
     Intersection its;
@@ -614,7 +617,8 @@ void export_render() {
         .def("evalEnvironment", &Emitter::evalEnvironment, BP_RETURN_VALUE)
         .def("isCompound", &Emitter::isCompound)
         .def("getElement", &Emitter::getElement, BP_RETURN_VALUE)
-        .def("getBitmap", &Emitter::getBitmap, getBitmap_overloads()[BP_RETURN_VALUE]);
+        .def("getBitmap", &Emitter::getBitmap, getBitmap_overloads()[BP_RETURN_VALUE])
+        .def("sampleRay", &Emitter::sampleRay, BP_RETURN_VALUE); //!
 
     BP_SETSCOPE(Emitter_class);
     bp::enum_<Emitter::EEmitterFlags>("EEmitterFlags")
@@ -708,6 +712,16 @@ void export_render() {
         .def("postprocess", &Integrator::postprocess)
         .def("configureSampler", &Integrator::configureSampler)
         .def("getSubIntegrator", &Integrator::getSubIntegrator, BP_RETURN_VALUE);
+
+//    BP_CLASS(Photon, ConfigurableObject, bp::init<>())
+//        .def("getDepth", &Photon::getDepth); //!
+
+//    BP_CLASS(PhotonMap, ConfigurableObject, bp::no_init);
+//        .def("capacity", &PhotonMap::capacity); //!
+
+//    BP_CLASS(PhotonMapIntegrator, ConfigurableObject, bp::no_init);
+
+
 
     BP_STRUCT(BSDFSamplingRecord, (bp::init<const Intersection &, Sampler *, ETransportMode>()))
         .def(bp::init<const Intersection &, const Vector &, ETransportMode>())
