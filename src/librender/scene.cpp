@@ -591,6 +591,24 @@ void Scene::addShape(Shape *shape) {
     }
 }
 
+//!
+void Scene::addShapeShallow(Shape *shape) {
+  m_shapes.push_back(shape);
+}
+
+//!
+bool Scene::removeShape(Shape *shape) {
+    auto it = std::find(m_shapes.begin(), m_shapes.end(), shape);
+    if (it == m_shapes.end()) {
+      return false;
+    }
+    else {
+      m_shapes.erase(it);
+      return true;
+    }
+}
+
+
 std::string Scene::toString() const {
     std::ostringstream oss;
 

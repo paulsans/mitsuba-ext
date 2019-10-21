@@ -158,6 +158,10 @@ public:
     /// Add an unnamed child
     inline void addChild(ConfigurableObject *child) { addChild("", child); }
 
+    //!
+    void addShapeShallow(Shape *shape);
+    bool removeShape(Shape *shape);
+
     /** \brief Configure this object (called \a once after construction
        and addition of all child \ref ConfigurableObject instances).) */
     void configure();

@@ -405,7 +405,11 @@ void export_render() {
         .def("getMeshes", &scene_getMeshes)
         .def("getEmitters", &scene_getEmitters)
         .def("getMedia", &scene_getMedia)
-        .def("getKDTree", scene_getKDTree, BP_RETURN_VALUE);
+        .def("getKDTree", scene_getKDTree, BP_RETURN_VALUE)
+        //!
+        .def("addShapeShallow", &Scene::addShapeShallow)
+        .def("removeShape", &Scene::removeShape, BP_RETURN_VALUE)
+        ;
 
     BP_CLASS(Sampler, ConfigurableObject, bp::no_init)
         .def("clone", &Sampler::clone, BP_RETURN_VALUE)
