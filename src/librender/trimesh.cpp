@@ -54,6 +54,18 @@ TriMesh::TriMesh(const std::string &name, size_t triangleCount,
     m_mutex = new Mutex();
 }
 
+//!
+void TriMesh::applyTransform(const Transform &transform) {
+  for (auto i = 0; i < m_vertexCount; i++) {
+    m_positions[i] = transform.operator()(m_positions[i]);
+  }
+  if (m_normals != NULL) {
+    for (auto i = 0; i < m_vertexCount; i++) {
+      m_normals[i] = transform.operator()(m_normals[i]);
+    }
+  }
+}
+
 TriMesh::TriMesh(const Properties &props)
  : Shape(props), m_triangles(NULL), m_positions(NULL),
     m_normals(NULL), m_texcoords(NULL), m_tangents(NULL),

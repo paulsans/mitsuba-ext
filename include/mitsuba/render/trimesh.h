@@ -94,6 +94,9 @@ public:
     //! @{ \name General query functions
     // =============================================================
 
+    //!
+    void applyTransform(const Transform &transform);
+
     /// Return the total surface area
     Float getSurfaceArea() const;
 

@@ -558,7 +558,9 @@ void export_render() {
         .def("getPrimitiveCount", &Shape::getPrimitiveCount)
         .def("getEffectivePrimitiveCount", &Shape::getEffectivePrimitiveCount)
         .def("copyAttachments", &Shape::copyAttachments)
-        .def("getShapeGroup", &shape_getShapeGroup, BP_RETURN_VALUE);
+        .def("getShapeGroup", &shape_getShapeGroup, BP_RETURN_VALUE)
+        //!
+        .def("applyTransform", &TriMesh::applyTransform);
 
     void (TriMesh::*triMesh_serialize1)(Stream *stream) const = &TriMesh::serialize;
     void (TriMesh::*triMesh_serialize2)(Stream *stream, InstanceManager *) const = &TriMesh::serialize;
@@ -586,7 +588,9 @@ void export_render() {
         .def("writeOBJ", &TriMesh::writeOBJ)
         .def("writePLY", &TriMesh::writePLY)
         .def("fromBlender", trimesh_fromBlender)
-        .staticmethod("fromBlender");
+        .staticmethod("fromBlender")
+        //!
+        .def("applyTransform", &TriMesh::applyTransform);
 
     Shape *(AbstractEmitter::*abstractemitter_getShape)(void) = &AbstractEmitter::getShape;
     Medium *(AbstractEmitter::*abstractemitter_getMedium)(void) = &AbstractEmitter::getMedium;

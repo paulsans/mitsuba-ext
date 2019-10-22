@@ -593,6 +593,7 @@ void Scene::addShape(Shape *shape) {
 
 //!
 void Scene::addShapeShallow(Shape *shape) {
+  m_kdtree->addShape(shape);
   m_shapes.push_back(shape);
 }
 

@@ -181,6 +181,9 @@ public:
     //! @{ \name Query functions to be implemented in subclasses
     // =============================================================
 
+    //!
+    void applyTransform(const Transform &transform);
+
     /// Return the name of this shape (e.g. the filename)
     virtual std::string getName() const;
 
@@ -530,5 +533,3 @@ protected:
 MTS_NAMESPACE_END
 
 #endif /* __MITSUBA_RENDER_SHAPE_H_ */
-
-

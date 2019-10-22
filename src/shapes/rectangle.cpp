@@ -77,6 +77,16 @@ MTS_NAMESPACE_BEGIN
  */
 class Rectangle : public Shape {
 public:
+
+    //!
+    void applyTransform(const Transform &transform) {
+      m_objectToWorld = transform * m_objectToWorld;
+      m_worldToObject = m_objectToWorld.inverse();
+      configure();
+    }
+
+
+
     Rectangle(const Properties &props) : Shape(props) {
         m_objectToWorld = props.getTransform("toWorld", Transform());
         if (props.getBoolean("flipNormals", false))

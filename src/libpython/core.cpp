@@ -1970,7 +1970,9 @@ void export_core() {
         .def("__getitem__", &properties_wrapper::get)
         .def("__setitem__", &properties_wrapper::set)
         .def("__contains__", &Properties::hasProperty)
-        .def("__repr__", &Properties::toString);
+        .def("__repr__", &Properties::toString)
+        //!
+        ;
 
     BP_SETSCOPE(properties);
     bp::enum_<Properties::EPropertyType>("EPropertyType")
