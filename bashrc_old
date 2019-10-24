@@ -1,0 +1,75 @@
+
+
+
+
+
+cgremote() {
+        ssh -L 6000:localhost:6000 sanzenba@cgcontact.informatik.uni-tuebingen.de -t "ssh -L 6000:localhost:22 ${1}; bash -l"
+}
+
+# connect to cg machines
+# Usage: cg [machine]
+cg() {
+    if [[ $# -eq 1 ]] ; then
+        ssh sanzenba@cgcontact.informatik.uni-tuebingen.de -t "ssh ${1}; bash -l"
+    else
+        ssh sanzenba@cgcontact.informatik.uni-tuebingen.de
+    fi
+}
+
+cgtb() {
+    machine="cgpool1206"
+    if [[ $# -ge 1 ]] ; then
+        machine=$1
+    fi
+    port=6004
+    if [[ $# -ge 2 ]] ; then
+        port=$2
+    fi
+    ssh -L ${port}:localhost:${port} sanzenba@cgcontact.informatik.uni-tuebingen.de -t "ssh -L ${port}:localhost:6006 ${machine}; bash -l"
+}
+
+cgvisdom() {
+    machine=$1
+    port=6004
+    if [[ $# -ge 2 ]] ; then
+        port=$2
+    fi
+    ssh -L ${port}:localhost:${port} sanzenba@cgcontact.informatik.uni-tuebingen.de -t "ssh -L ${port}:localhost:8097 ${machine} -t \"visdom\""
+}
+
+cgfw() {
+    machine=$1
+    port=6001
+    if [[ $# -ge 2 ]] ; then
+        port=$2
+    fi
+    ssh -L ${port}:${machine}:22 sanzenba@cgcontact.informatik.uni-tuebingen.de
+    # you can now login directly to $machine from a new terminal using 'ssh -p $port sanzenba@localhost'
+}
+
+
+
+
+# local binaries
+export PATH=~/.local/bin:$PATH
+
+# master's thesis root directory
+export MA_DIR=~/Masterarbeit
+
+# scratch root directory
+export SCRATCH_DIR=/is/rg/ev/scratch/psanzenbacher
+export DATA_DIR=$SCRATCH_DIR/data
+
+# shortcut to master's thesis directory and subdirectories
+alias master='cd ${MA_DIR}'
+alias repos='cd ${MA_DIR}/Repositories'
+
+# shortcut to setCUDAenv script
+alias cudaenv='source ~/Masterarbeit/Tools/setCUDAenv.sh'
+
+# activate virtual environments faster
+venv() { source "${1}/bin/activate"; }
+
+# shortcut for sourcing ~/.bashrc
+alias src='source ~/.bashrc'

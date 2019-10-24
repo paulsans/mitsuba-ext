@@ -371,48 +371,78 @@ def generate(env):
 def enable_modules(self, modules, debug=False, crosscompiling=False) :
         import sys
 
-        validModules = [
-                'QtCore',
-                'QtGui',
-                'QtWidgets',
-                'QtOpenGL',
-                'Qt3Support',
-                'QtAssistant', # deprecated
-                'QtAssistantClient',
-                'QtScript',
-                'QtDBus',
-                'QtSql',
-                'QtSvg',
-                # The next modules have not been tested yet so, please
-                # maybe they require additional work on non Linux platforms
-                'QtNetwork',
-                'QtTest',
-                'QtXml',
-                'QtXmlPatterns',
-                'QtUiTools',
-                'QtDesigner',
-                'QtDesignerComponents',
-                'QtWebKit',
-                'QtHelp',
-                'QtScript',
-                'QtScriptTools',
-                'QtMultimedia',
-                ]
+        # validModules = [
+        #         'QtCore',
+        #         'QtGui',
+        #         'QtWidgets',
+        #         'QtOpenGL',
+        #         'Qt3Support',
+        #         'QtAssistant', # deprecated
+        #         'QtAssistantClient',
+        #         'QtScript',
+        #         'QtDBus',
+        #         'QtSql',
+        #         'QtSvg',
+        #         # The next modules have not been tested yet so, please
+        #         # maybe they require additional work on non Linux platforms
+        #         'QtNetwork',
+        #         'QtTest',
+        #         'QtXml',
+        #         'QtXmlPatterns',
+        #         'QtUiTools',
+        #         'QtDesigner',
+        #         'QtDesignerComponents',
+        #         'QtWebKit',
+        #         'QtHelp',
+        #         'QtScript',
+        #         'QtScriptTools',
+        #         'QtMultimedia',
+        #         ]
+
+        validModules = {
+                'QtOpenGL',	                'QtCore': 'Qt5Core',
+                'Qt3Support',	                'QtGui': 'Qt5Gui',
+                'QtAssistant', # deprecated	                'QtWidgets': 'Qt5Widgets',
+                'QtAssistantClient',	                'QtOpenGL': 'Qt5OpenGL',
+                'QtScript',	                # 'Qt3Support': 'Qt3Support', # removed in Qt5
+                'QtDBus',	                # 'QtAssistant': 'QtAssistant', # deprecated in Qt5
+                'QtSql',	                # 'QtAssistantClient': 'QtAssistantClient', # deprecated in Qt5
+                'QtSvg',	                # 'QtDBus': 'Qt5DBus', # unused
+                # 'QtSql': 'Qt5Sql', # unused
+                # 'QtSvg': 'Qt5Svg', # unused
+                # The next modules have not been tested yet so, please	                # The next modules have not been tested yet so, please
+                # maybe they require additional work on non Linux platforms	                # maybe they require additional work on non Linux platforms
+                'QtNetwork',	                'QtNetwork': 'Qt5Network',
+                'QtTest',	                # 'QtTest': 'Qt5Test', # unused
+                'QtXml',	                'QtXml': 'Qt5Xml',
+                'QtXmlPatterns',	                'QtXmlPatterns': 'Qt5XmlPatterns',
+                'QtUiTools',	                # 'QtUiTools': 'Qt5UiTools', # unused
+                'QtDesigner',	                # 'QtDesigner' : 'Qt5Designer', # unused
+                'QtDesignerComponents',	                # 'QtDesignerComponents' : 'Qt5DesignerComponents', # unused
+                'QtWebKit',	                # 'QtWebKit': 'Qt5WebKit', # unused
+                'QtHelp',	                # 'QtHelp': 'Qt5Help', # unused
+                'QtScript',	                # 'QtScript': 'Qt5Script', # unused
+                'QtScriptTools',	                # 'QtScriptTools': 'Qt5ScriptTools', # unused
+                'QtMultimedia',	                # 'QtMultimedia': 'Qt5Multimedia', # unused
+        }
+
         pclessModules = [
 # in qt <= 4.3 designer and designerComponents are pcless, on qt5.4 they are not, so removed.
 #               'QtDesigner',
 #               'QtDesignerComponents',
         ]
         staticModules = [
-                'QtUiTools',
+                # 'QtUiTools',
         ]
         invalidModules=[]
         for module in modules:
                 if module not in validModules :
                         invalidModules.append(module)
         if invalidModules :
+                # raise Exception("Modules %s are not Qt5 modules. Valid Qt5 modules are: %s"% (
+                #         str(invalidModules),str(validModules)))
                 raise Exception("Modules %s are not Qt5 modules. Valid Qt5 modules are: %s"% (
-                        str(invalidModules),str(validModules)))
+                        str(invalidModules),str(validModules.keys())))
 
         moduleDefines = {
                 'QtScript'   : ['QT_SCRIPT_LIB'],
@@ -446,10 +476,12 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
                         pcmodules.remove("QtAssistant")
                         pcmodules.append("QtAssistantClient")
                 if sys.platform.startswith('linux'):
-                        self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+                        # self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+                        pkgconfigmodules = [validModules[module]+debugSuffix for module in modules if module not in pclessModules]
+                        self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pkgconfigmodules))
                 elif sys.platform == 'darwin':
                         for module in pcmodules:
-                                #self.AppendUnique(CPPPATH="$QTDIR/frameworks/%s.framework/Versions/5/Headers" % module)
+                                self.AppendUnique(CPPPATH="$QTDIR/frameworks/%s.framework/Versions/5/Headers" % module)
                                 self.Append(LINKFLAGS=['-framework', module])
                 self["QT5_MOCCPPPATH"] = self["CPPPATH"]
                 return

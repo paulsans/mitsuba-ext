@@ -71,6 +71,9 @@ def detect_python():
         if len(flags) == 0:
             continue
         boost_libname = find_boost_python(version)
+
+        print(version, boost_libname == None)
+
         if boost_libname == None:
             continue
         pyenv['PYTHON' + version + 'INCLUDE'] = []
