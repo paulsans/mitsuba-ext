@@ -4,9 +4,13 @@
 #include <mitsuba/render/renderqueue.h>
 #include <mitsuba/render/renderjob.h>
 #include <mitsuba/render/noise.h>
+#include <mitsuba/render/photonsampler.h>
 //#include <mitsuba/render/photon.h> //!
 //#include <mitsuba/render/photonmapper.h> //!
 #include "../shapes/instance.h"
+
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
 
 using namespace mitsuba;
 
@@ -729,6 +733,23 @@ void export_render() {
 
 //    BP_CLASS(PhotonMapIntegrator, ConfigurableObject, bp::no_init);
 
+    // BP_CLASS(PhotonSampler, Object, (bp::init<int, int>()))
+        // .def("getNumPhotons", &PhotonSampler::getNumPhotons)
+        // .def("getDepth", &PhotonSampler::getDepth)
+        // .def("test", &PhotonSampler::test);
+    // BP_CLASS(PhotonSampler, ConfigurableObject, bp::no_init);
+
+    bp::class_<PhotonRay>("PhotonRay", bp::init<Point, Vector, Spectrum, bool>())
+        .def("getPosition", &PhotonRay::getPosition)
+        .def("getDirection", &PhotonRay::getDirection)
+        .def("getSpectrum", &PhotonRay::getSpectrum)
+        .def("isValid", &PhotonRay::isValid);
+
+    bp::class_<std::vector<PhotonRay> >("PhotonRayCollection")
+        .def(bp::vector_indexing_suite<std::vector<PhotonRay> >());
+
+    bp::class_<PhotonSampler>("PhotonSampler", bp::init<Scene *>())
+        .def("samplePhotons", &PhotonSampler::samplePhotons);
 
 
     BP_STRUCT(BSDFSamplingRecord, (bp::init<const Intersection &, Sampler *, ETransportMode>()))
